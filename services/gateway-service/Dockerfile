@@ -24,9 +24,10 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
     rm -rf /var/lib/apt/lists/*
 
 # Copy the binary to the production image from the builder stage.
-COPY --from=builder /app/server /app/server
-COPY --from=builder /app/public.crt /app/server.crt
-COPY --from=builder /app/private.key /app/server.key
+# Owned by uid 10001 so the service can also run as a non-root user (e.g. runAsUser: 10001).
+COPY --chown=10001:10001 --from=builder /app/server /app/server
+COPY --chown=10001:10001 --from=builder /app/public.crt /app/server.crt
+COPY --chown=10001:10001 --from=builder /app/private.key /app/server.key
 
 EXPOSE 443
 

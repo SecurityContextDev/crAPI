@@ -29,6 +29,10 @@ FROM openresty/openresty:alpine
 RUN apk add gettext curl
 # React
 RUN rm /etc/nginx/conf.d/default.conf
+# nginx-wrapper.sh renders default.conf and nginx writes its pid at startup: point both at /tmp
+# so the container also runs with a read-only root filesystem and as a non-root user.
+RUN ln -s /tmp/nginx-default.conf /etc/nginx/conf.d/default.conf && \
+    ln -s /tmp/nginx.pid /usr/local/openresty/nginx/logs/nginx.pid
 COPY --from=build /app/build /usr/share/nginx/html
 COPY ./nginx-wrapper.sh /etc/nginx/nginx-wrapper.sh
 COPY ./nginx.conf.template /etc/nginx/conf.d/default.conf.template

@@ -145,7 +145,7 @@ LOGGING = {
         "file": {
             "level": LOG_LEVEL,
             "class": "logging.FileHandler",
-            "filename": BASE_DIR + "/debug.log",
+            "filename": os.environ.get("LOG_FILE", BASE_DIR + "/debug.log"),
             "formatter": "standard",
         },
         "console": {
